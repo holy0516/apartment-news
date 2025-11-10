@@ -1,0 +1,23 @@
+name: NHK LINE Broadcast
+
+on:
+  schedule:
+    - cron: "30 22 * * *"   # JST 07:30（UTC 22:30）
+  workflow_dispatch:
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Send NHK to LINE (broadcast)
+        env:
+          LINE_CHANNEL_TOKEN: ${{ secrets.LINE_CHANNEL_TOKEN }}
+          # 任意: RSS_URL: https://www3.nhk.or.jp/rss/news/cat5.xml
+          # 任意: FETCH_LIMIT: "12"
+          # 任意: LINE_MAX_LEN: "2000"
+        run: python src/bunkyo-haishin.py
